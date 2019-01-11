@@ -2,11 +2,12 @@
     ViewData["Title"] = "Home Page";
 }
 <br />
-<br/>
-<div class="row">
+<br />
+<div class="row" id="tables-container">
     <div class="panel panel-danger">
         <div class="panel-heading">
             <strong>Aura</strong>
+            <span class="pull-right small">@Url.Action("AuraCallback", "Home")</span>
         </div>
         <div class="panel-body">
             <table class="table table-condensed table-bordered table-striped" id="aura-table">
@@ -27,6 +28,7 @@
     <div class="panel panel-primary">
         <div class="panel-heading">
             <strong>Halo</strong>
+            <span class="pull-right small">@Url.Action("HaloCallback", "Home")</span>
         </div>
         <div class="panel-body">
             <table class="table table-condensed table-bordered table-striped" id="halo-table">
@@ -47,6 +49,7 @@
     <div class="panel panel-success">
         <div class="panel-heading">
             <strong>CAM</strong>
+            <span class="pull-right small">@Url.Action("CamCallback", "Home")</span>
         </div>
         <div class="panel-body">
             <table class="table table-condensed table-bordered table-striped" id="cam-table">
@@ -67,6 +70,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <strong>Client Base</strong>
+            <span class="pull-right small">@Url.Action("ClientBaseCallback", "Home")</span>
         </div>
         <div class="panel-body">
             <table class="table table-condensed table-bordered table-striped" id="clientbase-table">
@@ -84,3 +88,28 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="payload-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Webhook Payload</h4>
+            </div>
+            <div class="modal-body"style="max-height: 500px; overflow-y: auto;">
+                <pre class="prettyprint" id="payload-content">
+                </pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@section Scripts{
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script>
+        $(app.init);
+    </script>
+}

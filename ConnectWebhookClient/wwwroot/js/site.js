@@ -1,40 +1,68 @@
 ﻿'use strict';
 
-(function () {
+var app = app || {};
 
-    function init() {
+(function (vm) {
+    var payloads = [];
+
+    vm.init = function() {
 
         console.info('SignalR Initializing...');
 
         var connection = new signalR.HubConnectionBuilder().withUrl("/sockethub").build();
 
-        connection.on("ReceiveHaloMessage", function (message) { addMessageToTable(message, 'halo') });
+        connection.on("ReceiveHaloMessage", function (payload) { addMessageToTable(payload, 'halo') });
 
-        connection.on("ReceiveAuraMessage", function (message) { addMessageToTable(message, 'aura') });
+        connection.on("ReceiveAuraMessage", function (payload) { addMessageToTable(payload, 'aura') });
 
-        connection.on("ReceiveCamMessage", function (message) { addMessageToTable(message, 'cam') });
+        connection.on("ReceiveCamMessage", function (payload) { addMessageToTable(payload, 'cam') });
 
-        connection.on("ReceiveClientBaseMessage", function (message) { addMessageToTable(message, 'clientbase') });
+        connection.on("ReceiveClientBaseMessage", function (payload) { addMessageToTable(payload, 'clientbase') });
 
         connection.start().catch(console.error);
 
         console.info('SignalR Initialized');
+
+        $('div#tables-container').on('dblclick', 'tbody tr', handRowDblClick);
     }
 
-    function addMessageToTable(message, tablePrefix) {
-        console.log(message);
+    function addMessageToTable(payload, tablePrefix) {
+        cleanupPayload(payload);
 
-        var objectName = (message.request || {}).title;
-
-        objectName = objectName || message.artifact.fileName;
-
-        var date = new Date(message.event.timestampUtc);
+        var index = payloads.push(payload) - 1;
+        var objectName = (payload.request || {}).title || payload.artifact.fileName;
+        var date = new Date(payload.event.timestampUtc);
         var timestamp = date.toLocaleString();
+        var row = '';
 
-        var row = `<tr><td>${message.event.object}</td><td>${message.event.action}</td><td>${objectName}</td><td>${timestamp}</td><td>${message.event.actionedBy.displayName}</td></tr>`;
+        row += '<tr id="' + index + '">';
+        row += '<td>' + payload.event.object + '</td>';
+        row += '<td>' + payload.event.action + '</td>';
+        row += '<td>' + objectName + '</td>';
+        row += '<td>' + timestamp + '</td>';
+        row += '<td>' + payload.event.actionedBy.displayName + '</td>';
+        row += '</tr >';
 
-        $(`table#${tablePrefix}-table tbody`).append(row);
+        $('table#' + tablePrefix + '-table tbody').append(row);
     }
 
-    init();
-})();
+    function handRowDblClick(e) {
+        $('div#payload-modal').modal('show');
+
+        var payloadIndex = Number(e.currentTarget.id);
+        var payload = payloads[payloadIndex];
+        var payloadString = JSON.stringify(payload, null, 4);
+
+        $('#payload-content').html(payloadString);
+    }
+
+    function cleanupPayload(payload) {
+        if (!payload.artifact) {
+            delete payload.artifact;
+        }
+
+        if (!payload.request) {
+            delete payload.request;
+        }
+    }
+})(app);
