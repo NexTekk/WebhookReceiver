@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<br />
+<br />
+<div class="row" id="tables-container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <strong>Posts</strong>
+            <span class="pull-right small">@Url.Action("Post", "Home")</span>
+        </div>
+        <div class="panel-body">
+            <table class="table table-condensed table-bordered table-striped" id="webhook-posts">
+                <thead>
+                    <tr>
+                        <th>Object</th>
+                        <th>Action</th>
+                        <th>Event DateTime</th>
+                        <th>User</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="payload-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Webhook Payload</h4>
+            </div>
+            <div class="modal-body"style="max-height: 500px; overflow-y: auto;">
+                <pre class="prettyprint" id="payload-content">
+                </pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@section Scripts{
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script>
+        $(app.init);
+    </script>
+}
