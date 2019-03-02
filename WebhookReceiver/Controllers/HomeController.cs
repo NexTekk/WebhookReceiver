@@ -30,7 +30,14 @@ namespace ConnectWebhookClient.Controllers
         [HttpPost, Route("callback")]
         public async Task<IActionResult> Post([FromBody]JObject model)
         {
-            var request = Request;
+            await _hubContext.Clients.All.ReceiveMessage(model);
+
+            return Ok();
+        }
+
+        [HttpPost, Route("bitbucket")]
+        public async Task<IActionResult> ReceiveBitBucketEvent([FromBody]JObject model)
+        {
             await _hubContext.Clients.All.ReceiveMessage(model);
 
             return Ok();

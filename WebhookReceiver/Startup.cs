@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,6 +25,13 @@ namespace ConnectWebhookClient
         {
             services.AddMvc();
             services.AddSignalR();
+
+            services.AddHttpClient("bitbucket", c =>
+            {
+                var credentialBytes = Encoding.ASCII.GetBytes($"{Configuration["BitbucketUser"]}:{Configuration["BitbucketPw"]}");
+
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentialBytes));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
