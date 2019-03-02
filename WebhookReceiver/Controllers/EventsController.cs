@@ -20,7 +20,7 @@ namespace WebhookReceiver.Controllers
             _configuration = configuration;
         }
 
-        [Route("bitbucket")]
+        [HttpPost("bitbucket")]
         public async Task<IActionResult> ReceiveBitbucketEvent([FromBody] JObject payload)
         {
             var data = GetPostbackData(payload);
