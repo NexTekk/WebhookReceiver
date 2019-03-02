@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +24,7 @@ namespace WebhookReceiver.Controllers
         public async Task<IActionResult> ReceiveBitbucketEvent([FromBody] JObject payload)
         {
             var data = GetPostbackData(payload);
-            var url = _configuration["BitbucketPipeline"];
+            var url = _configuration["BitbucketPipelineUrl"];
             var httpClient = _httpClientFactory.CreateClient("bitbucket");
             var response = await httpClient.PostAsJsonAsync(url, data);
 
@@ -43,8 +42,7 @@ namespace WebhookReceiver.Controllers
                 throw new InvalidCastException("Cannot parse payload");
             }
 
-            var branchParts = branchName.Split('/');
-            var pattern = branchParts.Last();
+            var pipelineName = _configuration["BitbucketPipelineName"];
             var data = new Dictionary<string, object>
             {
                 {
@@ -59,7 +57,7 @@ namespace WebhookReceiver.Controllers
                             new Dictionary<string, string>
                             {
                                 { "type", "custom" },
-                                { "pattern", pattern }
+                                { "pattern", pipelineName }
                             }
                         }
                     }
